@@ -3,10 +3,93 @@ import sqlite3
 from datetime import datetime
 
 st.set_page_config(
-    page_title="Gestão de Sites - Equipe",
+    page_title="Gestão de Sites e Comandas",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+# --- INJEÇÃO DO CSS ORIGINAL (VISUAL IDÊNTICO AO SEU) ---
+st.markdown("""
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --gray: #94a3b8;
+            --border: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .stApp {
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        .block-container {
+            padding: 2rem 1.5rem !important;
+            max-width: 1200px !important;
+        }
+
+        .card-custom {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .box-info {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 10px;
+        }
+        .box-info span { font-size: 0.75rem; color: var(--gray); display: block; font-weight: 700; text-transform: uppercase; }
+        .box-info h3 { margin: 6px 0 2px 0; font-size: 1.3rem; font-weight: 700; color: var(--text); }
+        .box-info p { margin: 0; font-size: 0.78rem; color: var(--gray); }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .badge-andamento { background: rgba(217, 119, 6, 0.15); color: #f59e0b; }
+        .badge-pronto { background: rgba(5, 150, 105, 0.15); color: #10b981; }
+        .badge-concluido { background: rgba(37, 99, 235, 0.15); color: #3b82f6; }
+        
+        /* Ajustes nos inputs do Streamlit para combinar com o tema escuro */
+        div.stTextInput > label, div.stSelectbox > label, div.stNumberInput > label, div.stDateInput > label, div.stTextArea > label {
+            color: var(--gray) !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # --- BANCO DE DADOS SQLITE ---
 def get_db():
@@ -45,20 +128,25 @@ def init_db():
 
 init_db()
 
-# --- AUTENTICAÇÃO COM SESSION STATE ---
+# --- SESSÃO DE LOGIN ---
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.username = ""
 
-# --- TELA DE LOGIN ---
 if not st.session_state.logged_in:
     col1, col2, col3 = st.columns([1, 1.2, 1])
     with col2:
         st.markdown("<br><br>", unsafe_allow_html=True)
-        st.markdown("### 🔐 Gestão de Equipe - Acesso Restrito")
+        st.markdown("""
+            <div class="card-custom" style="text-align: center;">
+                <h2>Gestão de Equipe</h2>
+                <p style="color: var(--gray); font-size: 0.85rem;">Acesso restrito</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
         with st.form("form_login"):
-            user_input = st.text_input("Usuário (joao ou artur)").strip().lower()
-            pass_input = st.text_input("Senha", type="password").strip()
+            user_input = st.text_input("Usuário", placeholder="joao ou artur").strip().lower()
+            pass_input = st.text_input("Senha", type="password", placeholder="******").strip()
             submit_login = st.form_submit_button("Entrar", use_container_width=True)
             
             if submit_login:
@@ -74,29 +162,34 @@ if not st.session_state.logged_in:
                     st.error("Usuário ou senha incorretos.")
     st.stop()
 
-# --- PAINEL PRINCIPAL (AUTENTICADO) ---
+# --- PAINEL PRINCIPAL ---
 usuario_ativo = st.session_state.username
 
-# Cabeçalho do Painel
-header_col1, header_col2 = st.columns([3, 1])
-with header_col1:
-    st.title(f"Olá, {usuario_ativo.upper()}")
-    st.caption("Painel de Controle e Gestão de Projetos")
-with header_col2:
-    if st.button("🚪 Sair", use_container_width=True):
-        st.session_state.logged_in = False
-        st.session_state.username = ""
-        st.rerun()
+# Cabeçalho Superior Estilizado
+st.markdown(f"""
+    <div class="dashboard-header">
+        <div>
+            <h2 style="margin: 0; font-size: 1.1rem; color: var(--text);">OLÁ, {usuario_ativo.upper()}</h2>
+            <span style="font-size: 0.78rem; color: var(--gray);">Painel de Controle e Gestão de Projetos</span>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
-st.divider()
+# Botão de Logout separado para garantir funcionamento perfeito
+if st.button("🚪 Sair do Sistema"):
+    st.session_state.logged_in = False
+    st.session_state.username = ""
+    st.rerun()
 
-# Carregar dados do banco
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Carregar dados
 conn = get_db()
 comandas = [dict(row) for row in conn.execute("SELECT * FROM comandas").fetchall()]
 arquivos = [dict(row) for row in conn.execute("SELECT * FROM arquivos_gerais").fetchall()]
 conn.close()
 
-# Calcular Resumos
+# Cálculos de Faturamento e Comissões
 faturamento_total = 0.0
 total_joao = 0.0
 total_artur = 0.0
@@ -111,19 +204,24 @@ for c in comandas:
     total_joao += val_limpo * (p_joao / 100.0)
     total_artur += val_limpo * (p_artur / 100.0)
 
-# Indicadores Gerais (Métricas)
-m1, m2, m3, m4 = st.columns(4)
-m1.metric("Faturamento Total", f"R$ {faturamento_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-m2.metric("Total a Receber (João)", f"R$ {total_joao:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-m3.metric("Total a Receber (Artur)", f"R$ {total_artur:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-m4.metric("Total de Projetos", len(comandas))
+# Bloco de Indicadores Gerais (Cards Grid)
+cols_res = st.columns(4)
+with cols_res[0]:
+    st.markdown(f"""<div class="box-info"><span>Faturamento Total</span><h3 style="color: var(--success);">R$ {faturamento_total:,.2f}</h3><p>Valor somado dos projetos</p></div>""", unsafe_allow_html=True)
+with cols_res[1]:
+    st.markdown(f"""<div class="box-info"><span>Total a Receber (João)</span><h3>R$ {total_joao:,.2f}</h3><p>Baseado na divisão</p></div>""", unsafe_allow_html=True)
+with cols_res[2]:
+    st.markdown(f"""<div class="box-info"><span>Total a Receber (Artur)</span><h3>R$ {total_artur:,.2f}</h3><p>Baseado na divisão</p></div>""", unsafe_allow_html=True)
+with cols_res[3]:
+    st.markdown(f"""<div class="box-info"><span>Total de Projetos</span><h3>{len(comandas)}</h3><p>Cadastrados na comanda</p></div>""", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Abas do Painel
+# Abas Principais
 tab_comandas, tab_arquivos, tab_perfil = st.tabs(["📋 Comanda de Sites", "📂 Repositório de Arquivos", "⚙️ Meu Perfil"])
 
 with tab_comandas:
+    st.markdown('<div class="card-custom">', unsafe_allow_html=True)
     st.subheader("Adicionar / Atualizar Projeto")
     
     if "edit_id" not in st.session_state:
@@ -161,9 +259,9 @@ with tab_comandas:
                 default_date = datetime.today().date()
             dt_entrega = st.date_input("Data de Entrega", value=default_date)
         with col_c7:
-            arq_link = st.text_input("Links ou Arquivos", value=st.session_state.edit_arquivos, placeholder="GitHub, Drive...")
+            arq_link = st.text_input("Links ou Arquivos", value=st.session_state.edit_arquivos, placeholder="GitHub, Drive ou Hospedagem")
             
-        obs_text = st.text_area("Observações", value=st.session_state.edit_obs, placeholder="Detalhes ou pendências")
+        obs_text = st.text_area("Observações", value=st.session_state.edit_obs, placeholder="Detalhes ou pendências do projeto")
         
         btn_label = "Atualizar Projeto" if st.session_state.edit_id else "Salvar na Comanda"
         submitted = st.form_submit_button(btn_label, use_container_width=True)
@@ -208,8 +306,10 @@ with tab_comandas:
             st.session_state.edit_arquivos = ""
             st.session_state.edit_obs = ""
             st.rerun()
+            
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.divider()
+    st.markdown('<div class="card-custom">', unsafe_allow_html=True)
     st.subheader("Trabalhos Atuais")
     
     pesquisa = st.text_input("🔍 Pesquisar projeto...", placeholder="Digite o nome do cliente ou observação")
@@ -230,13 +330,16 @@ with tab_comandas:
                     if c["obs"]:
                         st.caption(f"Obs: {c['obs']}")
                 with col_t2:
-                    st.text(f"R$ {c['valor']}")
+                    st.markdown(f"R$ {c['valor']}")
                 with col_t3:
                     pj = c['pctJoao'] if c['pctJoao'] is not None else 50
                     pa = c['pctArtur'] if c['pctArtur'] is not None else 50
                     st.markdown(f"João: {pj}% | Artur: {pa}%")
                 with col_t4:
-                    st.markdown(f"Status: **{c['status']}**")
+                    badge_class = "badge-andamento"
+                    if c['status'] == 'Pronto': badge_class = "badge-pronto"
+                    elif c['status'] == 'Concluído': badge_class = "badge-concluido"
+                    st.markdown(f"<span class='badge {badge_class}'>{c['status']}</span>", unsafe_allow_html=True)
                     if c['dataEntrega']:
                         dt_fmt = '-'.join(c['dataEntrega'].split('-')[::-1])
                         st.caption(f"Entrega: {dt_fmt}")
@@ -265,8 +368,11 @@ with tab_comandas:
                             conn.close()
                             st.success("Projeto excluído!")
                             st.rerun()
+                            
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with tab_arquivos:
+    st.markdown('<div class="card-custom">', unsafe_allow_html=True)
     st.subheader("Repositório de Arquivos Gerais")
     with st.form("form_arquivo"):
         arq_titulo = st.text_input("Título do Arquivo/Link", placeholder="Ex: Logos e Assets")
@@ -303,8 +409,10 @@ with tab_arquivos:
                     conn.close()
                     st.success("Arquivo excluído!")
                     st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with tab_perfil:
+    st.markdown('<div class="card-custom" style="max-width: 500px;">', unsafe_allow_html=True)
     st.subheader("Configurações de Perfil")
     st.write(f"Usuário Conectado: **{usuario_ativo.upper()}**")
     
@@ -322,3 +430,4 @@ with tab_perfil:
                 conn.close()
                 st.success("Senha atualizada com sucesso!")
                 st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
