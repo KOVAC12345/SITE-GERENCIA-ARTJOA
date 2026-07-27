@@ -113,7 +113,7 @@ json_users = json.dumps(users_db)
 json_comandas = json.dumps(comandas_db)
 json_arquivos = json.dumps(arquivos_db)
 
-html_code = f"""
+html_code = """
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -121,7 +121,7 @@ html_code = f"""
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Sites e Comandas</title>
     <style>
-        :root {{
+        :root {
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
             --success: #059669;
@@ -133,9 +133,9 @@ html_code = f"""
             --gray: #64748b;
             --border: #cbd5e1;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }}
+        }
 
-        [data-theme="dark"] {{
+        [data-theme="dark"] {
             --primary: #3b82f6;
             --primary-hover: #2563eb;
             --success: #10b981;
@@ -147,9 +147,9 @@ html_code = f"""
             --gray: #94a3b8;
             --border: #334155;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-        }}
+        }
 
-        body {{
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
@@ -159,48 +159,48 @@ html_code = f"""
             align-items: center;
             min-height: 100vh;
             transition: background 0.2s, color 0.2s;
-        }}
+        }
 
-        .container {{
+        .container {
             width: 100%;
             max-width: 420px;
             padding: 20px;
             box-sizing: border-box;
-        }}
+        }
 
-        .card {{
+        .card {
             background: var(--card-bg);
             padding: 30px;
             border-radius: 12px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
-        }}
+        }
 
-        h2 {{
+        h2 {
             margin-top: 0;
             color: var(--text);
             font-size: 1.5rem;
             text-align: center;
             font-weight: 700;
-        }}
+        }
 
-        p.subtitle {{
+        p.subtitle {
             text-align: center;
             color: var(--gray);
             font-size: 0.85rem;
             margin-top: 4px;
             margin-bottom: 24px;
-        }}
+        }
 
-        label {{
+        label {
             font-size: 0.82rem;
             font-weight: 600;
             color: var(--gray);
             display: block;
             margin-top: 12px;
-        }}
+        }
 
-        input, select, textarea {{
+        input, select, textarea {
             width: 100%;
             padding: 10px 12px;
             margin-top: 6px;
@@ -210,15 +210,15 @@ html_code = f"""
             font-size: 0.9rem;
             background: var(--bg);
             color: var(--text);
-        }}
+        }
 
-        input:focus, select:focus, textarea:focus {{
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-        }}
+        }
 
-        button {{
+        button {
             width: 100%;
             padding: 11px;
             margin-top: 18px;
@@ -230,20 +230,20 @@ html_code = f"""
             font-size: 0.9rem;
             cursor: pointer;
             transition: background 0.2s;
-        }}
+        }
 
-        button:hover {{ background: var(--primary-hover); }}
+        button:hover { background: var(--primary-hover); }
 
-        #painel-app {{
+        #painel-app {
             display: none;
             max-width: 1150px;
             width: 100%;
             padding: 24px 16px;
             box-sizing: border-box;
             margin: 0 auto;
-        }}
+        }
 
-        .dashboard-header {{
+        .dashboard-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -255,7 +255,7 @@ html_code = f"""
             border: 1px solid var(--border);
         }
 
-        .painel-secao {{
+        .painel-secao {
             background: var(--card-bg);
             padding: 24px;
             border-radius: 10px;
@@ -264,31 +264,31 @@ html_code = f"""
             border: 1px solid var(--border);
         }
 
-        .grid-resumo {{
+        .grid-resumo {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 14px;
             margin-bottom: 20px;
         }
 
-        .box-info {{
+        .box-info {
             background: var(--card-bg);
             padding: 16px;
             border-radius: 10px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
-        }}
-        .box-info span {{ font-size: 0.75rem; color: var(--gray); display: block; font-weight: 700; text-transform: uppercase; }}
-        .box-info h3 {{ margin: 6px 0 2px 0; font-size: 1.3rem; font-weight: 700; }}
-        .box-info p {{ margin: 0; font-size: 0.78rem; color: var(--gray); }}
+        }
+        .box-info span { font-size: 0.75rem; color: var(--gray); display: block; font-weight: 700; text-transform: uppercase; }
+        .box-info h3 { margin: 6px 0 2px 0; font-size: 1.3rem; font-weight: 700; }
+        .box-info p { margin: 0; font-size: 0.78rem; color: var(--gray); }
 
-        .sub-abas {{
+        .sub-abas {
             display: flex;
             gap: 8px;
             margin-bottom: 18px;
             flex-wrap: wrap;
         }
-        .btn-sub-aba {{
+        .btn-sub-aba {
             flex: 1;
             min-width: 130px;
             padding: 10px;
@@ -301,13 +301,13 @@ html_code = f"""
             cursor: pointer;
             font-size: 0.85rem;
         }
-        .btn-sub-aba.ativa {{
+        .btn-sub-aba.ativa {
             background: var(--primary);
             color: #fff;
             border-color: var(--primary);
         }
 
-        .barra-ferramentas {{
+        .barra-ferramentas {
             display: flex;
             gap: 10px;
             margin-bottom: 16px;
@@ -315,25 +315,25 @@ html_code = f"""
             justify-content: space-between;
         }
 
-        table.tabela-gestao {{
+        table.tabela-gestao {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
             margin-top: 10px;
-        }}
-        table.tabela-gestao th, table.tabela-gestao td {{
+        }
+        table.tabela-gestao th, table.tabela-gestao td {
             padding: 12px 10px;
             border-bottom: 1px solid var(--border);
             text-align: left;
-        }}
-        table.tabela-gestao th {{
+        }
+        table.tabela-gestao th {
             color: var(--gray);
             font-weight: 700;
             text-transform: uppercase;
             font-size: 0.75rem;
-        }}
+        }
 
-        .btn-acao {{
+        .btn-acao {
             background: none;
             border: none;
             cursor: pointer;
@@ -343,21 +343,21 @@ html_code = f"""
             font-size: 0.78rem;
             margin-right: 4px;
             width: auto;
-        }}
-        .btn-excluir {{ color: var(--danger); background: rgba(220, 38, 38, 0.1); }}
-        .btn-editar {{ color: var(--primary); background: rgba(37, 99, 235, 0.1); }}
+        }
+        .btn-excluir { color: var(--danger); background: rgba(220, 38, 38, 0.1); }
+        .btn-editar { color: var(--primary); background: rgba(37, 99, 235, 0.1); }
 
-        .badge {{
+        .badge {
             padding: 3px 8px;
             border-radius: 6px;
             font-size: 0.72rem;
             font-weight: 700;
             display: inline-block;
-        }}
-        .badge-andamento {{ background: rgba(217, 119, 6, 0.15); color: var(--warning); }}
-        .badge-pronto {{ background: rgba(5, 150, 105, 0.15); color: var(--success); }}
-        .badge-concluido {{ background: rgba(37, 99, 235, 0.15); color: var(--primary); }}
-        .badge-membro {{ background: rgba(100, 116, 139, 0.15); color: var(--text); }}
+        }
+        .badge-andamento { background: rgba(217, 119, 6, 0.15); color: var(--warning); }
+        .badge-pronto { background: rgba(5, 150, 105, 0.15); color: var(--success); }
+        .badge-concluido { background: rgba(37, 99, 235, 0.15); color: var(--primary); }
+        .badge-membro { background: rgba(100, 116, 139, 0.15); color: var(--text); }
     </style>
 </head>
 <body>
@@ -551,36 +551,36 @@ html_code = f"""
     </div>
 
     <script>
-        const usuariosDB = {json_users};
-        const comandasDB = {json_comandas};
-        const arquivosDB = {json_arquivos};
+        const usuariosDB = __JSON_USERS__;
+        const comandasDB = __JSON_COMANDAS__;
+        const arquivosDB = __JSON_ARQUIVOS__;
 
-        function obterUsuarios() {{
+        function obterUsuarios() {
             return usuariosDB;
-        }}
+        }
 
-        function fazerLogin() {{
+        function fazerLogin() {
             const user = document.getElementById('login-usuario').value.trim().toLowerCase();
             const pass = document.getElementById('login-senha').value.trim();
             const usuarios = obterUsuarios();
 
-            if (usuarios[user] && usuarios[user] === pass) {{
+            if (usuarios[user] && usuarios[user] === pass) {
                 localStorage.setItem('gp_logado', 'true');
                 localStorage.setItem('gp_usuario', user);
                 carregarApp();
-            }} else {{
+            } else {
                 alert("Usuário ou senha incorretos.");
-            }}
-        }}
+            }
+        }
 
-        function fazerLogout() {{
+        function fazerLogout() {
             localStorage.removeItem('gp_logado');
             localStorage.removeItem('gp_usuario');
             document.getElementById('painel-app').style.display = 'none';
             document.getElementById('tela-login').style.display = 'block';
-        }}
+        }
 
-        function carregarApp() {{
+        function carregarApp() {
             document.getElementById('tela-login').style.display = 'none';
             document.getElementById('painel-app').style.display = 'block';
             let usuario = localStorage.getItem('gp_usuario') || 'usuário';
@@ -588,29 +588,29 @@ html_code = f"""
             document.getElementById('perfil-usuario-ativo').value = usuario;
 
             atualizarDados();
-        }}
+        }
 
-        window.onload = function() {{
-            if (localStorage.getItem('gp_tema') === 'dark') {{
+        window.onload = function() {
+            if (localStorage.getItem('gp_tema') === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'dark');
-            }}
-            if (localStorage.getItem('gp_logado') === 'true') {{
+            }
+            if (localStorage.getItem('gp_logado') === 'true') {
                 carregarApp();
-            }}
-        }}
+            }
+        }
 
-        function alternarTema() {{
+        function alternarTema() {
             const html = document.documentElement;
-            if (html.getAttribute('data-theme') === 'dark') {{
+            if (html.getAttribute('data-theme') === 'dark') {
                 html.removeAttribute('data-theme');
                 localStorage.setItem('gp_tema', 'light');
-            }} else {{
+            } else {
                 html.setAttribute('data-theme', 'dark');
                 localStorage.setItem('gp_tema', 'dark');
-            }}
-        }}
+            }
+        }
 
-        function mudarAba(aba) {{
+        function mudarAba(aba) {
             document.getElementById('secao-comandas').style.display = aba === 'comandas' ? 'block' : 'none';
             document.getElementById('secao-arquivos').style.display = aba === 'arquivos' ? 'block' : 'none';
             document.getElementById('secao-perfil').style.display = aba === 'perfil' ? 'block' : 'none';
@@ -618,25 +618,25 @@ html_code = f"""
             document.getElementById('tab-comandas').classList.toggle('ativa', aba === 'comandas');
             document.getElementById('tab-arquivos').classList.toggle('ativa', aba === 'arquivos');
             document.getElementById('tab-perfil').classList.toggle('ativa', aba === 'perfil');
-        }}
+        }
 
-        function sincronizarPct(origem) {{
+        function sincronizarPct(origem) {
             let pctJoao = document.getElementById('cmd-pct-joao');
             let pctArtur = document.getElementById('cmd-pct-artur');
-            if (origem === 'joao') {{
+            if (origem === 'joao') {
                 let val = parseFloat(pctJoao.value) || 0;
                 if (val > 100) val = 100;
                 if (val < 0) val = 0;
                 pctArtur.value = 100 - val;
-            }} else {{
+            } else {
                 let val = parseFloat(pctArtur.value) || 0;
                 if (val > 100) val = 100;
                 if (val < 0) val = 0;
                 pctJoao.value = 100 - val;
-            }}
-        }}
+            }
+        }
 
-        function salvarComanda() {{
+        function salvarComanda() {
             const idEdit = document.getElementById('comanda-id-editando').value;
             const cliente = document.getElementById('cmd-cliente').value.trim();
             const valor = document.getElementById('cmd-valor').value.trim();
@@ -647,16 +647,16 @@ html_code = f"""
             const arquivos = document.getElementById('cmd-arquivos').value.trim();
             const obs = document.getElementById('cmd-obs').value.trim();
 
-            if (!cliente || !valor) {{
+            if (!cliente || !valor) {
                 alert("Preencha o cliente e o valor.");
                 return;
-            }}
+            }
 
-            const url = window.parent.location.pathname + `?action=salvar_comanda&id=${{idEdit}}&cliente=${{encodeURIComponent(cliente)}}&valor=${{encodeURIComponent(valor)}}&status=${{encodeURIComponent(status)}}&pctJoao=${{pctJoao}}&pctArtur=${{pctArtur}}&data=${{encodeURIComponent(dataEntrega)}}&arquivos=${{encodeURIComponent(arquivos)}}&obs=${{encodeURIComponent(obs)}}`;
+            const url = window.parent.location.pathname + `?action=salvar_comanda&id=${idEdit}&cliente=${encodeURIComponent(cliente)}&valor=${encodeURIComponent(valor)}&status=${encodeURIComponent(status)}&pctJoao=${pctJoao}&pctArtur=${pctArtur}&data=${encodeURIComponent(dataEntrega)}&arquivos=${encodeURIComponent(arquivos)}&obs=${encodeURIComponent(obs)}`;
             window.parent.location.href = url;
-        }}
+        }
 
-        function limparFormComanda() {{
+        function limparFormComanda() {
             document.getElementById('cmd-cliente').value = '';
             document.getElementById('cmd-valor').value = '';
             document.getElementById('cmd-pct-joao').value = '50';
@@ -665,11 +665,11 @@ html_code = f"""
             document.getElementById('cmd-arquivos').value = '';
             document.getElementById('cmd-obs').value = '';
             document.getElementById('comanda-id-editando').value = '';
-        }}
+        }
 
-        function editarComanda(id) {{
+        function editarComanda(id) {
             let c = comandasDB.find(item => item.id == id);
-            if (c) {{
+            if (c) {
                 document.getElementById('comanda-id-editando').value = c.id;
                 document.getElementById('cmd-cliente').value = c.cliente;
                 document.getElementById('cmd-valor').value = c.valor;
@@ -680,46 +680,46 @@ html_code = f"""
                 document.getElementById('cmd-arquivos').value = c.arquivos;
                 document.getElementById('cmd-obs').value = c.obs;
                 mudarAba('comandas');
-            }}
-        }}
+            }
+        }
 
-        function excluirComanda(id) {{
-            if (confirm("Deseja realmente excluir este projeto?")) {{
-                window.parent.location.href = window.parent.location.pathname + `?action=excluir_comanda&id=${{id}}`;
-            }}
-        }}
+        function excluirComanda(id) {
+            if (confirm("Deseja realmente excluir este projeto?")) {
+                window.parent.location.href = window.parent.location.pathname + `?action=excluir_comanda&id=${id}`;
+            }
+        }
 
-        function salvarArquivoGeral() {{
+        function salvarArquivoGeral() {
             const titulo = document.getElementById('arq-titulo').value.trim();
             const url = document.getElementById('arq-url').value.trim();
 
-            if (!titulo || !url) {{
+            if (!titulo || !url) {
                 alert("Preencha o título e o link.");
                 return;
-            }}
+            }
 
-            window.parent.location.href = window.parent.location.pathname + `?action=salvar_arquivo&titulo=${{encodeURIComponent(titulo)}}&url=${{encodeURIComponent(url)}}`;
-        }}
+            window.parent.location.href = window.parent.location.pathname + `?action=salvar_arquivo&titulo=${encodeURIComponent(titulo)}&url=${encodeURIComponent(url)}`;
+        }
 
-        function excluirArquivoGeral(id) {{
-            if (confirm("Deseja realmente excluir este arquivo?")) {{
-                window.parent.location.href = window.parent.location.pathname + `?action=excluir_arquivo&id=${{id}}`;
-            }}
-        }}
+        function excluirArquivoGeral(id) {
+            if (confirm("Deseja realmente excluir este arquivo?")) {
+                window.parent.location.href = window.parent.location.pathname + `?action=excluir_arquivo&id=${id}`;
+            }
+        }
 
-        function salvarAlteracaoSenha() {{
+        function salvarAlteracaoSenha() {
             const novaSenha = document.getElementById('perfil-nova-senha').value.trim();
             const usuarioAtivo = localStorage.getItem('gp_usuario');
 
-            if (!novaSenha) {{
+            if (!novaSenha) {
                 alert("Digite a nova senha.");
                 return;
-            }}
+            }
 
-            window.parent.location.href = window.parent.location.pathname + `?action=atualizar_senha&user=${{encodeURIComponent(usuarioAtivo)}}&senha=${{encodeURIComponent(novaSenha)}}`;
-        }}
+            window.parent.location.href = window.parent.location.pathname + `?action=atualizar_senha&user=${encodeURIComponent(usuarioAtivo)}&senha=${encodeURIComponent(novaSenha)}`;
+        }
 
-        function atualizarDados() {{
+        function atualizarDados() {
             let comandas = comandasDB;
             let arquivos = arquivosDB;
             let termoBusca = (document.getElementById('busca-projeto').value || "").toLowerCase();
@@ -732,10 +732,10 @@ html_code = f"""
             let totalArtur = 0;
             let projetosFiltrados = comandas.filter(c => c.cliente.toLowerCase().includes(termoBusca) || (c.obs && c.obs.toLowerCase().includes(termoBusca)));
 
-            if (projetosFiltrados.length === 0) {{
+            if (projetosFiltrados.length === 0) {
                 corpoCmd.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--gray);">Nenhum projeto encontrado.</td></tr>`;
-            }} else {{
-                projetosFiltrados.forEach(c => {{
+            } else {
+                projetosFiltrados.forEach(c => {
                     let valLimpo = parseFloat(c.valor.toString().replace('.', '').replace(',', '.')) || 0;
                     let pJoao = c.pctJoao !== undefined ? c.pctJoao : 50;
                     let pArtur = c.pctArtur !== undefined ? c.pctArtur : 50;
@@ -748,53 +748,57 @@ html_code = f"""
                     if (c.status === 'Pronto') badgeStatus = 'badge-pronto';
                     if (c.status === 'Concluído') badgeStatus = 'badge-concluido';
 
-                    let linkHtml = c.arquivos ? `<a href="${{c.arquivos}}" target="_blank" style="color: var(--primary); font-weight:600;">Acessar</a>` : 'Nenhum';
+                    let linkHtml = c.arquivos ? `<a href="${c.arquivos}" target="_blank" style="color: var(--primary); font-weight:600;">Acessar</a>` : 'Nenhum';
                     let dataFormatada = c.dataEntrega ? c.dataEntrega.split('-').reverse().join('/') : '-';
 
                     corpoCmd.innerHTML += `
                         <tr>
-                            <td><strong>${{c.cliente}}</strong></td>
-                            <td>R$ ${{c.valor}}</td>
-                            <td><span class="badge badge-membro">João: ${{pJoao}}%</span> <span class="badge badge-membro">Artur: ${{pArtur}}%</span></td>
-                            <td><span class="badge ${{badgeStatus}}">${{c.status}}</span></td>
-                            <td>${{dataFormatada}}</td>
-                            <td>${{linkHtml}}</td>
-                            <td style="font-size: 0.82rem; color: var(--gray);">${{c.obs || '-'}}</td>
+                            <td><strong>${c.cliente}</strong></td>
+                            <td>R$ ${c.valor}</td>
+                            <td><span class="badge badge-membro">João: ${pJoao}%</span> <span class="badge badge-membro">Artur: ${pArtur}%</span></td>
+                            <td><span class="badge ${badgeStatus}">${c.status}</span></td>
+                            <td>${dataFormatada}</td>
+                            <td>${linkHtml}</td>
+                            <td style="font-size: 0.82rem; color: var(--gray);">${c.obs || '-'}</td>
                             <td style="text-align: right;">
-                                <button class="btn-acao btn-editar" onclick="editarComanda(${{c.id}})">Editar</button>
-                                <button class="btn-acao btn-excluir" onclick="excluirComanda(${{c.id}})">Excluir</button>
+                                <button class="btn-acao btn-editar" onclick="editarComanda(${c.id})">Editar</button>
+                                <button class="btn-acao btn-excluir" onclick="excluirComanda(${c.id})">Excluir</button>
                             </td>
                         </tr>
                     `;
-                }});
-            }}
+                });
+            }
 
             const corpoArq = document.getElementById('tabela-arquivos-corpo');
             corpoArq.innerHTML = '';
-            if (arquivos.length === 0) {{
+            if (arquivos.length === 0) {
                 corpoArq.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--gray);">Nenhum arquivo cadastrado.</td></tr>`;
-            }} else {{
-                arquivos.forEach(a => {{
+            } else {
+                arquivos.forEach(a => {
                     corpoArq.innerHTML += `
                         <tr>
-                            <td><strong>${{a.titulo}}</strong></td>
-                            <td><a href="${{a.url}}" target="_blank" style="color: var(--primary);">${{a.url}}</a></td>
+                            <td><strong>${a.titulo}</strong></td>
+                            <td><a href="${a.url}" target="_blank" style="color: var(--primary);">${a.url}</a></td>
                             <td style="text-align: right;">
-                                <button class="btn-acao btn-excluir" onclick="excluirArquivoGeral(${{a.id}})">Excluir</button>
+                                <button class="btn-acao btn-excluir" onclick="excluirArquivoGeral(${a.id})">Excluir</button>
                             </td>
                         </tr>
                     `;
-                }});
-            }}
+                });
+            }
 
-            document.getElementById('res-faturamento').innerText = "R$ " + faturamentoTotal.toLocaleString('pt-BR', {{minimumFractionDigits: 2}});
-            document.getElementById('val-joao').innerText = "R$ " + totalJoao.toLocaleString('pt-BR', {{minimumFractionDigits: 2}});
-            document.getElementById('val-artur').innerText = "R$ " + totalArtur.toLocaleString('pt-BR', {{minimumFractionDigits: 2}});
+            document.getElementById('res-faturamento').innerText = "R$ " + faturamentoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('val-joao').innerText = "R$ " + totalJoao.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('val-artur').innerText = "R$ " + totalArtur.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             document.getElementById('res-total-sites').innerText = comandas.length;
-        }}
+        }
     </script>
 </body>
 </html>
 """
+
+html_code = html_code.replace("__JSON_USERS__", json_users)
+html_code = html_code.replace("__JSON_COMANDAS__", json_comandas)
+html_code = html_code.replace("__JSON_ARQUIVOS__", json_arquivos)
 
 components.html(html_code, height=820, scrolling=True)
