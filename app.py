@@ -9,6 +9,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# --- ESCONDER CABEÇALHO E RODAPÉ PADRÃO DO STREAMLIT ---
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # --- BANCO DE DADOS SQLITE ---
 def get_db():
     conn = sqlite3.connect("gerencia.db", check_same_thread=False)
