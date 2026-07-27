@@ -9,12 +9,26 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- ESCONDER CABEÇALHO E RODAPÉ PADRÃO DO STREAMLIT ---
+# --- ESCONDER CABEÇALHO, RODAPÉ E ZERAR MARGENS (TELA CHEIA) ---
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
+    .block-container {
+        padding-top: 0rem !important;
+        padding-bottom: 0rem !important;
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+        max-width: 100% !important;
+    }
+    .main {
+        padding: 0rem !important;
+    }
+    iframe {
+        width: 100vw !important;
+        height: 100vh !important;
+    }
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -811,4 +825,4 @@ html_code = html_code.replace("__JSON_USERS__", json_users)
 html_code = html_code.replace("__JSON_COMANDAS__", json_comandas)
 html_code = html_code.replace("__JSON_ARQUIVOS__", json_arquivos)
 
-components.html(html_code, height=820, scrolling=True)
+components.html(html_code, height=950, scrolling=True)
