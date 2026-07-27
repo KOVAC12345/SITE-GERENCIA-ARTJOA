@@ -676,19 +676,9 @@ html_code = """
                 return;
             }
 
-            const url = window.parent.location.pathname + `?action=salvar_comanda&id=${idEdit}&cliente=${encodeURIComponent(cliente)}&valor=${encodeURIComponent(valor)}&status=${encodeURIComponent(status)}&pctJoao=${pctJoao}&pctArtur=${pctArtur}&data=${encodeURIComponent(dataEntrega)}&arquivos=${encodeURIComponent(arquivos)}&obs=${encodeURIComponent(obs)}`;
+            const baseUrl = window.parent.location.href.split('?')[0];
+            const url = baseUrl + `?action=salvar_comanda&id=${idEdit}&cliente=${encodeURIComponent(cliente)}&valor=${encodeURIComponent(valor)}&status=${encodeURIComponent(status)}&pctJoao=${pctJoao}&pctArtur=${pctArtur}&data=${encodeURIComponent(dataEntrega)}&arquivos=${encodeURIComponent(arquivos)}&obs=${encodeURIComponent(obs)}`;
             window.parent.location.href = url;
-        }
-
-        function limparFormComanda() {
-            document.getElementById('cmd-cliente').value = '';
-            document.getElementById('cmd-valor').value = '';
-            document.getElementById('cmd-pct-joao').value = '50';
-            document.getElementById('cmd-pct-artur').value = '50';
-            document.getElementById('cmd-data').value = '';
-            document.getElementById('cmd-arquivos').value = '';
-            document.getElementById('cmd-obs').value = '';
-            document.getElementById('comanda-id-editando').value = '';
         }
 
         function editarComanda(id) {
@@ -709,25 +699,28 @@ html_code = """
 
         function excluirComanda(id) {
             if (confirm("Deseja realmente excluir este projeto?")) {
-                window.parent.location.href = window.parent.location.pathname + `?action=excluir_comanda&id=${id}`;
+                const baseUrl = window.parent.location.href.split('?')[0];
+                window.parent.location.href = baseUrl + `?action=excluir_comanda&id=${id}`;
             }
         }
 
         function salvarArquivoGeral() {
             const titulo = document.getElementById('arq-titulo').value.trim();
-            const url = document.getElementById('arq-url').value.trim();
+            const urlLink = document.getElementById('arq-url').value.trim();
 
-            if (!titulo || !url) {
+            if (!titulo || !urlLink) {
                 alert("Preencha o título e o link.");
                 return;
             }
 
-            window.parent.location.href = window.parent.location.pathname + `?action=salvar_arquivo&titulo=${encodeURIComponent(titulo)}&url=${encodeURIComponent(url)}`;
+            const baseUrl = window.parent.location.href.split('?')[0];
+            window.parent.location.href = baseUrl + `?action=salvar_arquivo&titulo=${encodeURIComponent(titulo)}&url=${encodeURIComponent(urlLink)}`;
         }
 
         function excluirArquivoGeral(id) {
             if (confirm("Deseja realmente excluir este arquivo?")) {
-                window.parent.location.href = window.parent.location.pathname + `?action=excluir_arquivo&id=${id}`;
+                const baseUrl = window.parent.location.href.split('?')[0];
+                window.parent.location.href = baseUrl + `?action=excluir_arquivo&id=${id}`;
             }
         }
 
@@ -740,7 +733,8 @@ html_code = """
                 return;
             }
 
-            window.parent.location.href = window.parent.location.pathname + `?action=atualizar_senha&user=${encodeURIComponent(usuarioAtivo)}&senha=${encodeURIComponent(novaSenha)}`;
+            const baseUrl = window.parent.location.href.split('?')[0];
+            window.parent.location.href = baseUrl + `?action=atualizar_senha&user=${encodeURIComponent(usuarioAtivo)}&senha=${encodeURIComponent(novaSenha)}`;
         }
 
         function atualizarDados() {
