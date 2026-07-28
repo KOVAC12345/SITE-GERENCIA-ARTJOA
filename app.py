@@ -7,6 +7,23 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Oculta a barra superior do Streamlit (GitHub, Share, menu, rodapé) e remove as bordas/espaçamentos
+st.markdown("""
+    <style>
+        [data-testid="stHeader"] {display: none !important;}
+        [data-testid="stToolbar"] {visibility: hidden !important;}
+        footer {display: none !important;}
+        .block-container {
+            padding: 0px !important;
+            margin: 0px !important;
+            max-width: 100% !important;
+        }
+        section.main > div {
+            padding: 0px !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 html_code = """
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -22,27 +39,27 @@ html_code = """
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text: #0f172a;
-            --gray: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 10.5px 25px -5px rgba(99, 102, 241, 0.07);
-        }
-
-        [data-theme="dark"] {
-            --primary: #818cf8;
-            --primary-hover: #6366f1;
-            --accent: #f472b6;
-            --success: #34d399;
-            --danger: #f87171;
-            --warning: #fbbf24;
             --bg: #05050a;
             --card-bg: #111827;
             --text: #f9fafb;
             --gray: #9ca3af;
             --border: #1f2937;
             --shadow: 0 10.5px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="light"] {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10.5px 25px -5px rgba(99, 102, 241, 0.07);
         }
 
         body {
@@ -52,8 +69,10 @@ html_code = """
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
             transition: background 0.3s, color 0.3s;
         }
 
@@ -62,6 +81,7 @@ html_code = """
             max-width: 440px;
             padding: 20px;
             box-sizing: border-box;
+            margin-top: 40px;
         }
 
         .card {
@@ -147,9 +167,9 @@ html_code = """
 
         #painel-app {
             display: none;
-            max-width: 1150px;
+            max-width: 1300px;
             width: 100%;
-            padding: 30px 20px;
+            padding: 10px;
             box-sizing: border-box;
             margin: 0 auto;
         }
@@ -578,8 +598,8 @@ html_code = """
         }
 
         window.onload = function() {
-            if (localStorage.getItem('gp_tema') === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
+            if (localStorage.getItem('gp_tema') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
             }
             if (localStorage.getItem('gp_logado') === 'true') {
                 carregarApp();
@@ -588,12 +608,12 @@ html_code = """
 
         function alternarTema() {
             const html = document.documentElement;
-            if (html.getAttribute('data-theme') === 'dark') {
+            if (html.getAttribute('data-theme') === 'light') {
                 html.removeAttribute('data-theme');
-                localStorage.setItem('gp_tema', 'light');
-            } else {
-                html.setAttribute('data-theme', 'dark');
                 localStorage.setItem('gp_tema', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('gp_tema', 'light');
             }
         }
 
@@ -782,4 +802,4 @@ html_code = """
 </html>
 """
 
-components.html(html_code, height=820, scrolling=True)
+components.html(html_code, height=950, scrolling=True)
