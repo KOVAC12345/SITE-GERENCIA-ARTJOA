@@ -444,7 +444,7 @@ html_code = """
                             </tr>
                         </thead>
                         <tbody id="tabela-comandas-corpo">
-                            <tr><td colspan="7" style="text-align: center; color: var(--gray);">Nenhum site na comanda.</td></tr>
+                            <tr><td colspan="7" style="text-align: center; color: var(--gray);">Carregando dados da nuvem...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -508,21 +508,70 @@ html_code = """
         </div>
     </div>
 
+    <!-- FIREBASE INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, get, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAb2gk6d1nsQ8B8x426k4FMH277J9Z6J5Q",
+            authDomain: "gestao-sites-equipe.firebaseapp.com",
+            databaseURL: "https://gestao-sites-equipe-default-rtdb.firebaseio.com",
+            projectId: "gestao-sites-equipe",
+            storageBucket: "gestao-sites-equipe.firebasestorage.app",
+            messagingSenderId: "639078202731",
+            appId: "1:639078202731:web:eba777dfff6215f6b2602e",
+            measurementId: "G-3DW3RB7265"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.db = db;
+        window.dbRef = ref;
+        window.dbSet = set;
+        window.dbGet = get;
+        window.dbOnValue = onValue;
+        window.dbRemove = remove;
+
+        window.iniciarListenersFirebase();
+    </script>
+
     <script>
-        function obterUsuarios() {
-            let salvos = localStorage.getItem('gp_users');
-            if (salvos) {
-                return JSON.parse(salvos);
-            }
-            return { "joao": "123", "artur": "123" };
+        let globalComandas = [];
+        let globalArquivos = [];
+        let globalUsers = { "joao": "123", "artur": "123" };
+
+        window.iniciarListenersFirebase = function() {
+            // Sincronizar Usuários
+            window.dbOnValue(window.dbRef(window.db, 'users'), (snapshot) => {
+                if (snapshot.exists()) {
+                    globalUsers = snapshot.val();
+                } else {
+                    window.dbSet(window.dbRef(window.db, 'users'), { "joao": "123", "artur": "123" });
+                }
+            });
+
+            // Sincronizar Comandas em Tempo Real
+            window.dbOnValue(window.dbRef(window.db, 'comandas'), (snapshot) => {
+                const data = snapshot.val();
+                globalComandas = data ? Object.values(data) : [];
+                atualizarDados();
+            });
+
+            // Sincronizar Arquivos em Tempo Real
+            window.dbOnValue(window.dbRef(window.db, 'arquivos_gerais'), (snapshot) => {
+                const data = snapshot.val();
+                globalArquivos = data ? Object.values(data) : [];
+                atualizarDados();
+            });
         }
 
         function fazerLogin() {
             const user = document.getElementById('login-usuario').value.trim().toLowerCase();
             const pass = document.getElementById('login-senha').value.trim();
-            const usuarios = obterUsuarios();
 
-            if (usuarios[user] && usuarios[user] === pass) {
+            if (globalUsers[user] && globalUsers[user] === pass) {
                 localStorage.setItem('gp_logado', 'true');
                 localStorage.setItem('gp_usuario', user);
                 carregarApp();
@@ -545,12 +594,12 @@ html_code = """
                 return;
             }
 
-            let usuarios = obterUsuarios();
-            usuarios[user] = novaSenha;
-            localStorage.setItem('gp_users', JSON.stringify(usuarios));
-            alert("Senha alterada com sucesso! Faça login com a nova senha.");
-            document.getElementById('reset-nova-senha').value = '';
-            mostrarEsqueceuSenha(false);
+            globalUsers[user] = novaSenha;
+            window.dbSet(window.dbRef(window.db, 'users'), globalUsers).then(() => {
+                alert("Senha alterada com sucesso! Faça login com a nova senha.");
+                document.getElementById('reset-nova-senha').value = '';
+                mostrarEsqueceuSenha(false);
+            });
         }
 
         function fazerLogout() {
@@ -586,23 +635,22 @@ html_code = """
                 return;
             }
 
-            let usuarios = obterUsuarios();
-            let senhaSalva = novaSenha ? novaSenha : usuarios[usuarioAntigo];
+            let senhaSalva = novaSenha ? novaSenha : globalUsers[usuarioAntigo];
 
             if (usuarioAntigo !== novoUsuario) {
-                if (usuarios[novoUsuario]) {
+                if (globalUsers[novoUsuario]) {
                     alert("Este nome de usuário já existe.");
                     return;
                 }
-                delete usuarios[usuarioAntigo];
+                delete globalUsers[usuarioAntigo];
             }
 
-            usuarios[novoUsuario] = senhaSalva;
-            localStorage.setItem('gp_users', JSON.stringify(usuarios));
-            localStorage.setItem('gp_usuario', novoUsuario);
-
-            alert("Perfil atualizado com sucesso!");
-            carregarApp();
+            globalUsers[novoUsuario] = senhaSalva;
+            window.dbSet(window.dbRef(window.db, 'users'), globalUsers).then(() => {
+                localStorage.setItem('gp_usuario', novoUsuario);
+                alert("Perfil atualizado com sucesso!");
+                carregarApp();
+            });
         }
 
         window.onload = function() {
@@ -661,21 +709,12 @@ html_code = """
                 return;
             }
 
-            let comandas = JSON.parse(localStorage.getItem('gp_comandas')) || [];
+            const id = idEdit ? Number(idEdit) : Date.now();
+            const comandaData = { id, cliente, valor, status, pctJoao, pctArtur, arquivos, obs };
 
-            if (idEdit) {
-                let idx = comandas.findIndex(c => c.id == idEdit);
-                if (idx >= 0) {
-                    comandas[idx] = { id: Number(idEdit), cliente, valor, status, pctJoao, pctArtur, arquivos, obs };
-                }
-                document.getElementById('comanda-id-editando').value = '';
-            } else {
-                comandas.push({ id: Date.now(), cliente, valor, status, pctJoao, pctArtur, arquivos, obs });
-            }
-
-            localStorage.setItem('gp_comandas', JSON.stringify(comandas));
-            limparFormComanda();
-            atualizarDados();
+            window.dbSet(window.dbRef(window.db, 'comandas/' + id), comandaData).then(() => {
+                limparFormComanda();
+            });
         }
 
         function limparFormComanda() {
@@ -689,8 +728,7 @@ html_code = """
         }
 
         function editarComanda(id) {
-            let comandas = JSON.parse(localStorage.getItem('gp_comandas')) || [];
-            let c = comandas.find(item => item.id == id);
+            let c = globalComandas.find(item => item.id == id);
             if (c) {
                 document.getElementById('comanda-id-editando').value = c.id;
                 document.getElementById('cmd-cliente').value = c.cliente;
@@ -705,10 +743,7 @@ html_code = """
         }
 
         function excluirComanda(id) {
-            let comandas = JSON.parse(localStorage.getItem('gp_comandas')) || [];
-            comandas = comandas.filter(c => c.id != id);
-            localStorage.setItem('gp_comandas', JSON.stringify(comandas));
-            atualizarDados();
+            window.dbRemove(window.dbRef(window.db, 'comandas/' + id));
         }
 
         function salvarArquivoGeral() {
@@ -720,26 +755,20 @@ html_code = """
                 return;
             }
 
-            let arquivos = JSON.parse(localStorage.getItem('gp_arquivos_gerais')) || [];
-            arquivos.push({ id: Date.now(), titulo, url });
-            localStorage.setItem('gp_arquivos_gerais', JSON.stringify(arquivos));
+            const id = Date.now();
+            const arqData = { id, titulo, url };
 
-            document.getElementById('arq-titulo').value = '';
-            document.getElementById('arq-url').value = '';
-            atualizarDados();
+            window.dbSet(window.dbRef(window.db, 'arquivos_gerais/' + id), arqData).then(() => {
+                document.getElementById('arq-titulo').value = '';
+                document.getElementById('arq-url').value = '';
+            });
         }
 
         function excluirArquivoGeral(id) {
-            let arquivos = JSON.parse(localStorage.getItem('gp_arquivos_gerais')) || [];
-            arquivos = arquivos.filter(a => a.id != id);
-            localStorage.setItem('gp_arquivos_gerais', JSON.stringify(arquivos));
-            atualizarDados();
+            window.dbRemove(window.dbRef(window.db, 'arquivos_gerais/' + id));
         }
 
         function atualizarDados() {
-            let comandas = JSON.parse(localStorage.getItem('gp_comandas')) || [];
-            let arquivos = JSON.parse(localStorage.getItem('gp_arquivos_gerais')) || [];
-
             const corpoCmd = document.getElementById('tabela-comandas-corpo');
             corpoCmd.innerHTML = '';
             
@@ -747,10 +776,10 @@ html_code = """
             let totalJoao = 0;
             let totalArtur = 0;
 
-            if (comandas.length === 0) {
+            if (globalComandas.length === 0) {
                 corpoCmd.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--gray);">Nenhum site cadastrado na comanda.</td></tr>`;
             } else {
-                comandas.forEach(c => {
+                globalComandas.forEach(c => {
                     let valLimpo = parseFloat(c.valor.toString().replace('.', '').replace(',', '.')) || 0;
                     faturamentoTotal += valLimpo;
 
@@ -784,10 +813,10 @@ html_code = """
 
             const corpoArq = document.getElementById('tabela-arquivos-corpo');
             corpoArq.innerHTML = '';
-            if (arquivos.length === 0) {
+            if (globalArquivos.length === 0) {
                 corpoArq.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--gray);">Nenhum arquivo geral cadastrado.</td></tr>`;
             } else {
-                arquivos.forEach(a => {
+                globalArquivos.forEach(a => {
                     corpoArq.innerHTML += `
                         <tr>
                             <td><strong>${a.titulo}</strong></td>
@@ -803,7 +832,7 @@ html_code = """
             document.getElementById('res-faturamento').innerText = `R$ ${faturamentoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('res-total-joao').innerText = `R$ ${totalJoao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('res-total-artur').innerText = `R$ ${totalArtur.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('res-total-arquivos').innerText = arquivos.length + comandas.filter(c => c.arquivos).length;
+            document.getElementById('res-total-arquivos').innerText = globalArquivos.length + globalComandas.filter(c => c.arquivos).length;
         }
     </script>
 </body>
