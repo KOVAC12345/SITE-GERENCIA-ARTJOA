@@ -7,7 +7,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Oculta a barra superior do Streamlit (GitHub, Share, menu, rodapé) e remove as bordas/espaçamentos
+# Remove cabeçalhos, rodapés, bordas e trava a rolagem externa para ficar uma barra única
 st.markdown("""
     <style>
         [data-testid="stHeader"] {display: none !important;}
@@ -17,9 +17,17 @@ st.markdown("""
             padding: 0px !important;
             margin: 0px !important;
             max-width: 100% !important;
+            overflow: hidden !important;
         }
-        section.main > div {
-            padding: 0px !important;
+        iframe {
+            width: 100% !important;
+            height: 100vh !important;
+            border: none !important;
+        }
+        html, body, [data-testid="stAppViewContainer"] {
+            overflow: hidden !important;
+            height: 100vh !important;
+            background-color: #05050a;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -71,7 +79,7 @@ html_code = """
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            padding: 20px;
+            padding: 30px 20px;
             box-sizing: border-box;
             transition: background 0.3s, color 0.3s;
         }
