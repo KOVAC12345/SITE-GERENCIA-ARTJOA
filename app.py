@@ -3,7 +3,6 @@ import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="Gestão de Sites - Equipe",
-    page_icon="🚀",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -148,7 +147,7 @@ html_code = """
 
         #painel-app {
             display: none;
-            max-width: 1100px;
+            max-width: 1150px;
             width: 100%;
             padding: 30px 20px;
             box-sizing: border-box;
@@ -270,9 +269,7 @@ html_code = """
             font-weight: 700;
             display: inline-block;
         }
-        .badge-andamento { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
-        .badge-concluido { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-        .badge-membro { background: rgba(99, 102, 241, 0.15); color: var(--primary); }
+        .badge-fase { background: rgba(99, 102, 241, 0.15); color: var(--primary); }
     </style>
 </head>
 <body>
@@ -280,8 +277,8 @@ html_code = """
     <!-- TELA DE LOGIN -->
     <div class="container" id="tela-login">
         <div class="card">
-            <h2>🚀 Gestão da Equipe</h2>
-            <p class="subtitle">Acesso restrito (João & Artur)</p>
+            <h2>Gestão da Equipe</h2>
+            <p class="subtitle">Acesso restrito (Joao & Artur)</p>
             
             <div id="form-login-bloco">
                 <label>Usuário:</label>
@@ -321,7 +318,7 @@ html_code = """
                 </div>
             </div>
             <div>
-                <button onclick="alternarTema()" class="btn-acao" style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; margin:0;">🌓 Tema</button>
+                <button onclick="alternarTema()" class="btn-acao" style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; margin:0;">Tema</button>
                 <button onclick="fazerLogout()" class="btn-acao btn-excluir" style="padding: 8px 14px; margin-left: 8px;">Sair</button>
             </div>
         </div>
@@ -331,17 +328,17 @@ html_code = """
             <div class="box-info">
                 <span>Faturamento Total</span>
                 <h3 id="res-faturamento" style="color: var(--success);">R$ 0,00</h3>
-                <p>Total de gerimento geral</p>
+                <p>Total gerido em projetos</p>
             </div>
             <div class="box-info">
-                <span>Participação do João</span>
-                <h3 id="res-part-joao" style="color: var(--primary);">0%</h3>
-                <p id="val-joao">R$ 0,00 (0 sites)</p>
+                <span>Total Joao (Comissões)</span>
+                <h3 id="res-total-joao" style="color: var(--primary);">R$ 0,00</h3>
+                <p>Soma das porcentagens</p>
             </div>
             <div class="box-info">
-                <span>Participação do Artur</span>
-                <h3 id="res-part-artur" style="color: var(--accent);">0%</h3>
-                <p id="val-artur">R$ 0,00 (0 sites)</p>
+                <span>Total Artur (Comissões)</span>
+                <h3 id="res-total-artur" style="color: var(--accent);">R$ 0,00</h3>
+                <p>Soma das porcentagens</p>
             </div>
             <div class="box-info">
                 <span>Repositório de Arquivos</span>
@@ -352,8 +349,9 @@ html_code = """
 
         <div class="painel-secao">
             <div class="sub-abas">
-                <button class="btn-sub-aba ativa" onclick="mudarAba('comandas')" id="tab-comandas">📋 Comanda de Sites</button>
-                <button class="btn-sub-aba" onclick="mudarAba('arquivos')" id="tab-arquivos">📁 Repositório de Arquivos</button>
+                <button class="btn-sub-aba ativa" onclick="mudarAba('comandas')" id="tab-comandas">Comanda de Sites</button>
+                <button class="btn-sub-aba" onclick="mudarAba('arquivos')" id="tab-arquivos">Repositório de Arquivos</button>
+                <button class="btn-sub-aba" onclick="mudarAba('perfil')" id="tab-perfil">Configuração de Perfil</button>
             </div>
 
             <!-- ABA COMANDAS -->
@@ -361,7 +359,7 @@ html_code = """
                 <div style="background: var(--bg); padding: 20px; border-radius: 16px; margin-bottom: 24px; border: 1px solid var(--border);">
                     <h3 style="margin-top: 0; font-size: 1rem;">Adicionar / Atualizar Site na Comanda</h3>
                     <input type="hidden" id="comanda-id-editando">
-                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px;">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px;">
                         <div>
                             <label>Nome do Cliente / Projeto:</label>
                             <input type="text" id="cmd-cliente" placeholder="Ex: Imobiliária Furtado">
@@ -371,18 +369,25 @@ html_code = """
                             <input type="text" id="cmd-valor" placeholder="1500,00">
                         </div>
                         <div>
-                            <label>Responsável:</label>
-                            <select id="cmd-responsavel">
-                                <option value="João">João</option>
-                                <option value="Artur">Artur</option>
+                            <label>Fase / Status:</label>
+                            <select id="cmd-status">
+                                <option value="Criação de Design">Criação de Design</option>
+                                <option value="Desenvolvimento de Design">Desenvolvimento de Design</option>
+                                <option value="Funcionamento de Funções">Funcionamento de Funções</option>
+                                <option value="Polimento">Polimento</option>
+                                <option value="Hospedagem">Hospedagem</option>
+                                <option value="Entrega">Entrega</option>
                             </select>
                         </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
                         <div>
-                            <label>Status:</label>
-                            <select id="cmd-status">
-                                <option value="Em Andamento">Em Andamento</option>
-                                <option value="Concluído">Concluído</option>
-                            </select>
+                            <label>Porcentagem Joao (%):</label>
+                            <input type="number" id="cmd-pct-joao" value="50" min="0" max="100" oninput="sincronizarPorcentagens('joao')">
+                        </div>
+                        <div>
+                            <label>Porcentagem Artur (%):</label>
+                            <input type="number" id="cmd-pct-artur" value="50" min="0" max="100" oninput="sincronizarPorcentagens('artur')">
                         </div>
                     </div>
                     <div style="margin-top: 12px;">
@@ -403,8 +408,8 @@ html_code = """
                             <tr>
                                 <th>Projeto / Cliente</th>
                                 <th>Valor</th>
-                                <th>Responsável</th>
-                                <th>Status</th>
+                                <th>Divisão (Joao / Artur)</th>
+                                <th>Fase / Status</th>
                                 <th>Arquivos / Links</th>
                                 <th>Observações</th>
                                 <th style="text-align: right;">Ações</th>
@@ -448,6 +453,28 @@ html_code = """
                             <tr><td colspan="3" style="text-align: center; color: var(--gray);">Nenhum arquivo cadastrado.</td></tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- ABA PERFIL -->
+            <div id="secao-perfil" style="display: none;">
+                <div style="background: var(--bg); padding: 20px; border-radius: 16px; max-width: 500px; margin: 0 auto; border: 1px solid var(--border);">
+                    <h3 style="margin-top: 0; font-size: 1.1rem;">Configuração de Perfil e Acesso</h3>
+                    <p style="font-size: 0.85rem; color: var(--gray);">Altere seu nome de usuário ou senha de acesso ao sistema.</p>
+                    
+                    <label>Usuário Atual:</label>
+                    <select id="perfil-usuario-selecionado" onchange="carregarDadosPerfil()">
+                        <option value="joao">João</option>
+                        <option value="artur">Artur</option>
+                    </select>
+
+                    <label>Novo Nome de Usuário:</label>
+                    <input type="text" id="perfil-novo-usuario" placeholder="Digite o novo nome de usuário">
+
+                    <label>Nova Senha:</label>
+                    <input type="password" id="perfil-nova-senha" placeholder="Digite a nova senha">
+
+                    <button onclick="salvarConfigPerfil()" style="margin-top: 20px;">Salvar Alterações</button>
                 </div>
             </div>
         </div>
@@ -509,8 +536,45 @@ html_code = """
             document.getElementById('tela-login').style.display = 'none';
             document.getElementById('painel-app').style.display = 'block';
             let usuario = localStorage.getItem('gp_usuario') || 'Usuário';
-            document.getElementById('saudacao-usuario').innerText = `Olá, ${usuario.toUpperCase()} 👋`;
+            document.getElementById('saudacao-usuario').innerText = `Olá, ${usuario.toUpperCase()}`;
+            document.getElementById('perfil-usuario-selecionado').value = usuario.toLowerCase();
+            carregarDadosPerfil();
             atualizarDados();
+        }
+
+        function carregarDadosPerfil() {
+            const selUser = document.getElementById('perfil-usuario-selecionado').value;
+            document.getElementById('perfil-novo-usuario').value = selUser;
+            document.getElementById('perfil-nova-senha').value = '';
+        }
+
+        function salvarConfigPerfil() {
+            const usuarioAntigo = document.getElementById('perfil-usuario-selecionado').value;
+            const novoUsuario = document.getElementById('perfil-novo-usuario').value.trim().toLowerCase();
+            const novaSenha = document.getElementById('perfil-nova-senha').value.trim();
+
+            if (!novoUsuario) {
+                alert("O nome de usuário não pode estar vazio.");
+                return;
+            }
+
+            let usuarios = obterUsuarios();
+            let senhaSalva = novaSenha ? novaSenha : usuarios[usuarioAntigo];
+
+            if (usuarioAntigo !== novoUsuario) {
+                if (usuarios[novoUsuario]) {
+                    alert("Este nome de usuário já existe.");
+                    return;
+                }
+                delete usuarios[usuarioAntigo];
+            }
+
+            usuarios[novoUsuario] = senhaSalva;
+            localStorage.setItem('gp_users', JSON.stringify(usuarios));
+            localStorage.setItem('gp_usuario', novoUsuario);
+
+            alert("Perfil atualizado com sucesso!");
+            carregarApp();
         }
 
         window.onload = function() {
@@ -536,16 +600,31 @@ html_code = """
         function mudarAba(aba) {
             document.getElementById('secao-comandas').style.display = aba === 'comandas' ? 'block' : 'none';
             document.getElementById('secao-arquivos').style.display = aba === 'arquivos' ? 'block' : 'none';
+            document.getElementById('secao-perfil').style.display = aba === 'perfil' ? 'block' : 'none';
             document.getElementById('tab-comandas').classList.toggle('ativa', aba === 'comandas');
             document.getElementById('tab-arquivos').classList.toggle('ativa', aba === 'arquivos');
+            document.getElementById('tab-perfil').classList.toggle('ativa', aba === 'perfil');
+        }
+
+        function sincronizarPorcentagens(origem) {
+            let pJoao = parseFloat(document.getElementById('cmd-pct-joao').value) || 0;
+            let pArtur = parseFloat(document.getElementById('cmd-pct-artur').value) || 0;
+            if (origem === 'joao') {
+                pArtur = Math.max(0, Math.min(100, 100 - pJoao));
+                document.getElementById('cmd-pct-artur').value = pArtur;
+            } else {
+                pJoao = Math.max(0, Math.min(100, 100 - pArtur));
+                document.getElementById('cmd-pct-joao').value = pJoao;
+            }
         }
 
         function salvarComanda() {
             const idEdit = document.getElementById('comanda-id-editando').value;
             const cliente = document.getElementById('cmd-cliente').value.trim();
             const valor = document.getElementById('cmd-valor').value.trim();
-            const responsavel = document.getElementById('cmd-responsavel').value;
             const status = document.getElementById('cmd-status').value;
+            let pctJoao = parseFloat(document.getElementById('cmd-pct-joao').value) || 50;
+            let pctArtur = parseFloat(document.getElementById('cmd-pct-artur').value) || 50;
             const arquivos = document.getElementById('cmd-arquivos').value.trim();
             const obs = document.getElementById('cmd-obs').value.trim();
 
@@ -559,11 +638,11 @@ html_code = """
             if (idEdit) {
                 let idx = comandas.findIndex(c => c.id == idEdit);
                 if (idx >= 0) {
-                    comandas[idx] = { id: Number(idEdit), cliente, valor, responsavel, status, arquivos, obs };
+                    comandas[idx] = { id: Number(idEdit), cliente, valor, status, pctJoao, pctArtur, arquivos, obs };
                 }
                 document.getElementById('comanda-id-editando').value = '';
             } else {
-                comandas.push({ id: Date.now(), cliente, valor, responsavel, status, arquivos, obs });
+                comandas.push({ id: Date.now(), cliente, valor, status, pctJoao, pctArtur, arquivos, obs });
             }
 
             localStorage.setItem('gp_comandas', JSON.stringify(comandas));
@@ -574,6 +653,8 @@ html_code = """
         function limparFormComanda() {
             document.getElementById('cmd-cliente').value = '';
             document.getElementById('cmd-valor').value = '';
+            document.getElementById('cmd-pct-joao').value = '50';
+            document.getElementById('cmd-pct-artur').value = '50';
             document.getElementById('cmd-arquivos').value = '';
             document.getElementById('cmd-obs').value = '';
             document.getElementById('comanda-id-editando').value = '';
@@ -586,10 +667,11 @@ html_code = """
                 document.getElementById('comanda-id-editando').value = c.id;
                 document.getElementById('cmd-cliente').value = c.cliente;
                 document.getElementById('cmd-valor').value = c.valor;
-                document.getElementById('cmd-responsavel').value = c.responsavel || 'João';
-                document.getElementById('cmd-status').value = c.status;
-                document.getElementById('cmd-arquivos').value = c.arquivos;
-                document.getElementById('cmd-obs').value = c.obs;
+                document.getElementById('cmd-status').value = c.status || 'Criação de Design';
+                document.getElementById('cmd-pct-joao').value = c.pctJoao !== undefined ? c.pctJoao : 50;
+                document.getElementById('cmd-pct-artur').value = c.pctArtur !== undefined ? c.pctArtur : 50;
+                document.getElementById('cmd-arquivos').value = c.arquivos || '';
+                document.getElementById('cmd-obs').value = c.obs || '';
                 mudarAba('comandas');
             }
         }
@@ -634,10 +716,8 @@ html_code = """
             corpoCmd.innerHTML = '';
             
             let faturamentoTotal = 0;
-            let fatJoao = 0;
-            let qtdJoao = 0;
-            let fatArtur = 0;
-            let qtdArtur = 0;
+            let totalJoao = 0;
+            let totalArtur = 0;
 
             if (comandas.length === 0) {
                 corpoCmd.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--gray);">Nenhum site cadastrado na comanda.</td></tr>`;
@@ -646,23 +726,23 @@ html_code = """
                     let valLimpo = parseFloat(c.valor.toString().replace('.', '').replace(',', '.')) || 0;
                     faturamentoTotal += valLimpo;
 
-                    if (c.responsavel === 'Artur') {
-                        fatArtur += valLimpo;
-                        qtdArtur++;
-                    } else {
-                        fatJoao += valLimpo;
-                        qtdJoao++;
-                    }
+                    let pJ = c.pctJoao !== undefined ? c.pctJoao : 50;
+                    let pA = c.pctArtur !== undefined ? c.pctArtur : 50;
 
-                    let badgeStatus = c.status === 'Concluído' ? 'badge badge-concluido' : 'badge badge-andamento';
+                    let valJoao = valLimpo * (pJ / 100);
+                    let valArtur = valLimpo * (pA / 100);
+
+                    totalJoao += valJoao;
+                    totalArtur += valArtur;
+
                     let linkHtml = c.arquivos ? `<a href="${c.arquivos}" target="_blank" style="color: var(--primary); font-weight:600;">Acessar Link</a>` : 'Nenhum';
 
                     corpoCmd.innerHTML += `
                         <tr>
                             <td><strong>${c.cliente}</strong></td>
                             <td>R$ ${c.valor}</td>
-                            <td><span class="badge badge-membro">${c.responsavel || 'João'}</span></td>
-                            <td><span class="${badgeStatus}">${c.status}</span></td>
+                            <td>Joao: ${pJ}% (R$ ${valJoao.toLocaleString('pt-BR', {minimumFractionDigits: 2})})<br>Artur: ${pA}% (R$ ${valArtur.toLocaleString('pt-BR', {minimumFractionDigits: 2})})</td>
+                            <td><span class="badge badge-fase">${c.status || 'Criação de Design'}</span></td>
                             <td>${linkHtml}</td>
                             <td style="font-size: 0.85rem; color: var(--gray);">${c.obs || '-'}</td>
                             <td style="text-align: right;">
@@ -692,14 +772,9 @@ html_code = """
                 });
             }
 
-            let pctJoao = faturamentoTotal > 0 ? ((fatJoao / faturamentoTotal) * 100).toFixed(1) : 0;
-            let pctArtur = faturamentoTotal > 0 ? ((fatArtur / faturamentoTotal) * 100).toFixed(1) : 0;
-
             document.getElementById('res-faturamento').innerText = `R$ ${faturamentoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('res-part-joao').innerText = `${pctJoao}%`;
-            document.getElementById('val-joao').innerText = `R$ ${fatJoao.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${qtdJoao} sites)`;
-            document.getElementById('res-part-artur').innerText = `${pctArtur}%`;
-            document.getElementById('val-artur').innerText = `R$ ${fatArtur.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${qtdArtur} sites)`;
+            document.getElementById('res-total-joao').innerText = `R$ ${totalJoao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('res-total-artur').innerText = `R$ ${totalArtur.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('res-total-arquivos').innerText = arquivos.length + comandas.filter(c => c.arquivos).length;
         }
     </script>
